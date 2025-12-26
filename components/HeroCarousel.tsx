@@ -21,9 +21,11 @@ const AUTO_DELAY = 3;
 const HeroCarousel = () => {
   const slidesRef = useRef<HTMLDivElement[]>([]);
   const activeIndex = useRef(0);
-  const autoplayRef = useRef<gsap.delayedCall | null>(null);
-  const dragProxy = useRef<HTMLDivElement | null>(null);
 
+  // ✅ FIXED TYPE
+  const autoplayRef = useRef<gsap.core.Tween | null>(null);
+
+  const dragProxy = useRef<HTMLDivElement | null>(null);
   const total = images.length;
 
   const normalizeOffset = (offset: number) => {
@@ -88,6 +90,7 @@ const HeroCarousel = () => {
 
   const startAutoplay = () => {
     autoplayRef.current?.kill();
+
     autoplayRef.current = gsap.delayedCall(AUTO_DELAY, function loop() {
       next();
       autoplayRef.current = gsap.delayedCall(AUTO_DELAY, loop);
@@ -122,7 +125,7 @@ const HeroCarousel = () => {
   }, []);
 
   return (
-    <div className="flex  items-center justify-center">
+    <div className="flex items-center justify-center">
       {/* Drag proxy */}
       <div ref={dragProxy} className="absolute inset-0 z-50 cursor-grab" />
 
@@ -133,17 +136,16 @@ const HeroCarousel = () => {
         {images.map((src, i) => (
           <div
             key={i}
-            ref={(el) => el && (slidesRef.current[i] = el)}
-            className="absolute inset-0 rounded-2xl border border-white/10 shadow-2xl"
-            style={{
-              WebkitBoxReflect: "",
+            ref={(el) => {
+              if (el) slidesRef.current[i] = el;
             }}
+            className="absolute inset-0 rounded-2xl border border-white/10 shadow-2xl"
           >
             <Image
               src={src}
               alt={`Slide ${i}`}
               fill
-              className="rounded-2xl object-cover pointer-events-none"
+              className="pointer-events-none rounded-2xl object-cover"
               priority={i === 0}
             />
           </div>
