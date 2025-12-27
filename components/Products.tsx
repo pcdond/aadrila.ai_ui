@@ -148,7 +148,9 @@ export default function Products() {
         {products.map((product, index) => (
           <div
             key={product.id}
-            ref={(el) => (productRefs.current[index] = el)}
+            ref={(el) => {
+              productRefs.current[index] = el;
+            }}
             className={`relative mx-auto max-w-7xl grid lg:grid-cols-2 gap-16 items-center ${
               product.reverse ? "reverse" : ""
             }`}
